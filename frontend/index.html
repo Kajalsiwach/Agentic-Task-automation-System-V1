@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskForge — AI-Powered Task Automation</title>
+  <meta name="description" content="Deterministic natural-language task automation system powered by local classical ML, context memory, and execution planning.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">TaskForge</h1>
+          <span class="brand-subtitle">AI Task Automation System</span>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="engine-badge">
+          <span class="pulse-dot"></span>
+          <span>AI Engine: Local Classical ML</span>
+        </div>
+        <button id="resetMemoryBtn" class="btn-ghost" title="Reset conversational memory">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>Reset Context</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-main">
+      
+      <!-- Metrics Overview -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-info">
+            <span class="metric-label">Total Tasks</span>
+            <span id="metricTotal" class="metric-value">0</span>
+          </div>
+          <div class="metric-icon total-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-info">
+            <span class="metric-label">Pending</span>
+            <span id="metricPending" class="metric-value">0</span>
+          </div>
+          <div class="metric-icon pending-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-info">
+            <span class="metric-label">Completed</span>
+            <span id="metricCompleted" class="metric-value">0</span>
+          </div>
+          <div class="metric-icon completed-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-info">
+            <span class="metric-label">High Priority</span>
+            <span id="metricHigh" class="metric-value">0</span>
+          </div>
+          <div class="metric-icon priority-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Natural Language Command Center -->
+      <section class="command-center">
+        <div class="command-box">
+          <div class="command-input-wrapper">
+            <div class="command-input-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <input 
+              type="text" 
+              id="agentCommandInput" 
+              class="command-input" 
+              placeholder='Try: "Create a task to learn FastAPI with high priority in backend tomorrow"'
+              autocomplete="off"
+            >
+            <button id="agentExecuteBtn" class="btn-execute">
+              <span>Execute</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Suggestion Chips -->
+          <div class="command-suggestions">
+            <span class="suggestions-label">Try commands:</span>
+            <button class="chip" data-cmd="Create a task to learn FastAPI with medium priority">⚡ Create FastAPI Task</button>
+            <button class="chip" data-cmd="Add a high priority task to revise Python tomorrow">🐍 Revise Python (High)</button>
+            <button class="chip" data-cmd="Show all my tasks">📋 Show All Tasks</button>
+            <button class="chip" data-cmd="Show task 1">🔍 Show Task 1</button>
+            <button class="chip" data-cmd="Update its priority to low">🔄 Update Its Priority</button>
+            <button class="chip" data-cmd="Change its category to backend">🏷️ Change Category</button>
+            <button class="chip" data-cmd="Show the first task">🥇 Show First Task</button>
+            <button class="chip" data-cmd="Delete it">🗑️ Delete It</button>
+          </div>
+        </div>
+
+        <!-- AI Execution Plan & Live Pipeline Inspector -->
+        <div id="aiInspector" class="ai-inspector hidden">
+          <div class="inspector-header">
+            <div class="inspector-title">
+              <span class="inspector-icon">⚙️</span>
+              <h3>AI Reasoning & Execution Plan</h3>
+            </div>
+            <span id="inspectorStatusBadge" class="badge-success">Success</span>
+          </div>
+
+          <div class="inspector-body">
+            <div class="inspector-grid">
+              <div class="inspector-cell">
+                <span class="cell-title">Detected Intent</span>
+                <div class="intent-pill">
+                  <span id="intentName">CREATE_TASK</span>
+                  <span id="intentConfidence" class="confidence-tag">95.4%</span>
+                </div>
+              </div>
+              <div class="inspector-cell">
+                <span class="cell-title">Extracted Entities (NER)</span>
+                <div id="entityTagsContainer" class="entity-tags-list">
+                  <!-- Entities rendered dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <div class="plan-steps-section">
+              <span class="cell-title">Execution Plan Steps</span>
+              <ol id="planStepsList" class="plan-steps-list">
+                <!-- Steps rendered dynamically -->
+              </ol>
+            </div>
+
+            <div id="agentMessageBanner" class="agent-message-banner">
+              <!-- Agent feedback message -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Task Management Section -->
+      <section class="task-section">
+        <div class="task-section-header">
+          <div class="section-title-group">
+            <h2>Your Tasks</h2>
+            <span id="taskCountSubtitle" class="task-count-subtitle">0 tasks</span>
+          </div>
+
+          <div class="section-actions">
+            <div class="search-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="taskSearchInput" placeholder="Search tasks...">
+            </div>
+
+            <button id="openCreateModalBtn" class="btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>New Task</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <span class="filter-label">Status:</span>
+            <div class="filter-buttons" id="statusFilterButtons">
+              <button class="filter-btn active" data-status="">All</button>
+              <button class="filter-btn" data-status="Pending">Pending</button>
+              <button class="filter-btn" data-status="Completed">Completed</button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <span class="filter-label">Priority:</span>
+            <select id="priorityFilterSelect" class="filter-select">
+              <option value="">All Priorities</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tasks Grid -->
+        <div id="tasksGrid" class="tasks-grid">
+          <!-- Task cards dynamically inserted here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-state-icon">📝</div>
+          <h3>No tasks found</h3>
+          <p>Type a natural language command above or click "+ New Task" to create one.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Create / Edit Task Modal -->
+  <div id="taskModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Create New Task</h3>
+        <button id="closeModalBtn" class="btn-icon-close">&times;</button>
+      </div>
+
+      <form id="taskForm" class="modal-form">
+        <input type="hidden" id="formTaskId" value="">
+        
+        <div class="form-group">
+          <label for="formTitle">Title *</label>
+          <input type="text" id="formTitle" required placeholder="e.g. Master FastAPI with Python">
+        </div>
+
+        <div class="form-group">
+          <label for="formDescription">Description</label>
+          <textarea id="formDescription" rows="3" placeholder="Optional details, notes, or checklist..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formPriority">Priority</label>
+            <select id="formPriority">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="formCategory">Category</label>
+            <input type="text" id="formCategory" value="General" placeholder="e.g. Backend, Study, Work">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formDeadline">Deadline</label>
+            <input type="date" id="formDeadline">
+          </div>
+
+          <div class="form-group">
+            <label for="formStatus">Status</label>
+            <select id="formStatus">
+              <option value="Pending" selected>Pending</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelModalBtn" class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

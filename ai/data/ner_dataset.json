@@ -1,0 +1,366 @@
+[
+  {
+    "tokens": ["Create", "a", "task", "to", "learn", "FastAPI", "with", "medium", "priority"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Add", "a", "high", "priority", "task", "to", "revise", "Python", "tomorrow"],
+    "tags": ["O", "O", "B-PRIORITY", "O", "O", "O", "B-TITLE", "I-TITLE", "B-DEADLINE"]
+  },
+  {
+    "tokens": ["Create", "a", "backend", "project", "called", "AI", "Task", "Manager"],
+    "tags": ["O", "O", "B-CATEGORY", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "to", "learn", "FastAPI", "with", "medium", "priority", "in", "backend", "category", "tomorrow"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "O", "B-PRIORITY", "O", "O", "B-CATEGORY", "O", "B-DEADLINE"]
+  },
+  {
+    "tokens": ["Create", "a", "medium", "priority", "task", "called", "'", "Study", "Computer", "Vision", "'", "in", "the", "AI", "category"],
+    "tags": ["O", "O", "B-PRIORITY", "O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "O", "O", "B-CATEGORY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "medium", "priority", "task", "called", "Study", "Computer", "Vision", "in", "the", "AI", "category"],
+    "tags": ["O", "O", "B-PRIORITY", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "O", "B-CATEGORY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "to", "study", "Deep", "Learning", "with", "medium", "priority"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "to", "learn", "Machine", "Learning", "with", "high", "priority", "in", "the", "AI", "category"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "B-PRIORITY", "O", "O", "O", "B-CATEGORY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "to", "study", "Deep", "Learning", "in", "Computer", "Vision", "with", "high", "priority"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "called", "'", "Prepare", "ML", "presentation", "'"],
+    "tags": ["O", "O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "called", "Prepare", "ML", "presentation"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE"]
+  },
+  {
+    "tokens": ["Add", "task", "fix", "database", "connection", "timeout", "with", "high", "priority", "in", "backend"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "O", "B-PRIORITY", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Remind", "me", "to", "submit", "the", "assignment", "by", "Friday"],
+    "tags": ["O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "B-DEADLINE"]
+  },
+  {
+    "tokens": ["Add", "task", "buy", "groceries", "today", "with", "low", "priority", "in", "personal", "category"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE", "B-DEADLINE", "O", "B-PRIORITY", "O", "O", "B-CATEGORY", "O"]
+  },
+  {
+    "tokens": ["Make", "a", "task", "to", "prepare", "presentation", "for", "Monday", "with", "urgent", "priority"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "O", "B-DEADLINE", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "high", "priority", "task", "prepare", "for", "interview", "next", "week"],
+    "tags": ["O", "O", "B-PRIORITY", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "B-DEADLINE", "I-DEADLINE"]
+  },
+  {
+    "tokens": ["Add", "task", "optimize", "SQL", "queries", "in", "backend", "category"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "B-CATEGORY", "O"]
+  },
+  {
+    "tokens": ["Create", "task", "refactor", "executor", "workflow", "with", "medium", "priority"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Add", "a", "task", "design", "frontend", "mockups", "for", "TaskForge", "in", "frontend", "category"],
+    "tags": ["O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "O", "B-CATEGORY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "write", "project", "report", "due", "next", "Wednesday", "with", "low", "priority"],
+    "tags": ["O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "B-DEADLINE", "I-DEADLINE", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Add", "task", "inspect", "docker", "logs", "with", "description", "check", "crash", "reports"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "O", "B-DESCRIPTION", "I-DESCRIPTION", "I-DESCRIPTION"]
+  },
+  {
+    "tokens": ["Add", "task", "study", "for", "exam", "with", "category", "College", "and", "priority", "High"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "O", "B-CATEGORY", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "'", "Build", "Transformer", "Model", "'", "in", "AI", "category", "with", "high", "priority"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "O", "B-CATEGORY", "O", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Create", "a", "task", "to", "write", "unit", "tests", "for", "agent", "pipeline", "with", "medium", "priority", "in", "backend"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "I-TITLE", "O", "B-PRIORITY", "O", "O", "B-CATEGORY"]
+  },
+
+  {
+    "tokens": ["Show", "task", "9"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Show", "task", "1"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Show", "task", "5"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Show", "task", "14"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Show", "task", "22"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Get", "task", "9"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Open", "task", "9"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["What", "is", "task", "9"],
+    "tags": ["O", "O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Show", "the", "Python", "revision", "task"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE", "O"]
+  },
+  {
+    "tokens": ["Show", "the", "AI", "project"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE"]
+  },
+  {
+    "tokens": ["Show", "task", "with", "id", "4"],
+    "tags": ["O", "O", "O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["View", "task", "2"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Display", "task", "8"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Find", "task", "learn", "FastAPI"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE"]
+  },
+  {
+    "tokens": ["Fetch", "task", "number", "10"],
+    "tags": ["O", "O", "O", "B-TASK_ID"]
+  },
+
+  {
+    "tokens": ["Update", "task", "9", "priority", "to", "low"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Change", "its", "category", "to", "backend"],
+    "tags": ["O", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Update", "its", "category", "to", "AI"],
+    "tags": ["O", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Update", "the", "last", "task", "'s", "category", "to", "Project"],
+    "tags": ["O", "O", "B-TASK_ID", "I-TASK_ID", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Update", "the", "first", "task", "'s", "priority", "to", "high"],
+    "tags": ["O", "O", "B-TASK_ID", "I-TASK_ID", "O", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Update", "task", "14", "category", "to", "Project"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Update", "task", "22", "category", "to", "College"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Change", "category", "of", "task", "5", "to", "Design"],
+    "tags": ["O", "O", "O", "O", "B-TASK_ID", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Change", "its", "category", "to", "Project"],
+    "tags": ["O", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Change", "its", "category", "to", "DevOps"],
+    "tags": ["O", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Set", "its", "category", "to", "Marketing"],
+    "tags": ["O", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Update", "its", "priority", "to", "low"],
+    "tags": ["O", "O", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Change", "its", "priority", "to", "high"],
+    "tags": ["O", "O", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Update", "task", "1", "priority", "to", "medium"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Set", "task", "3", "status", "to", "Completed"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-STATUS"]
+  },
+  {
+    "tokens": ["Mark", "task", "5", "as", "completed"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "B-STATUS"]
+  },
+  {
+    "tokens": ["Mark", "it", "as", "done"],
+    "tags": ["O", "O", "O", "B-STATUS"]
+  },
+  {
+    "tokens": ["Mark", "task", "2", "as", "pending"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "B-STATUS"]
+  },
+  {
+    "tokens": ["Update", "deadline", "for", "task", "4", "to", "tomorrow"],
+    "tags": ["O", "O", "O", "O", "B-TASK_ID", "O", "B-DEADLINE"]
+  },
+  {
+    "tokens": ["Change", "its", "deadline", "to", "next", "Friday"],
+    "tags": ["O", "O", "O", "O", "B-DEADLINE", "I-DEADLINE"]
+  },
+  {
+    "tokens": ["Rename", "task", "1", "to", "Master", "FastAPI", "and", "Python"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "B-TITLE", "I-TITLE", "I-TITLE", "I-TITLE"]
+  },
+  {
+    "tokens": ["Change", "its", "title", "to", "Deep", "Learning", "Revision"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE"]
+  },
+  {
+    "tokens": ["Update", "category", "of", "task", "6", "to", "Research"],
+    "tags": ["O", "O", "O", "O", "B-TASK_ID", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Set", "its", "status", "to", "Completed"],
+    "tags": ["O", "O", "O", "O", "B-STATUS"]
+  },
+  {
+    "tokens": ["Change", "priority", "of", "that", "task", "to", "High"],
+    "tags": ["O", "O", "O", "O", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Update", "description", "of", "task", "7", "to", "includes", "all", "test", "cases"],
+    "tags": ["O", "O", "O", "O", "B-TASK_ID", "O", "B-DESCRIPTION", "I-DESCRIPTION", "I-DESCRIPTION", "I-DESCRIPTION"]
+  },
+  {
+    "tokens": ["Update", "task", "10", "deadline", "to", "Monday"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-DEADLINE"]
+  },
+  {
+    "tokens": ["Modify", "task", "2", "with", "high", "priority"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "B-PRIORITY", "O"]
+  },
+  {
+    "tokens": ["Edit", "task", "8", "category", "to", "DevOps"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Change", "the", "previous", "task", "priority", "to", "low"],
+    "tags": ["O", "O", "B-TASK_ID", "I-TASK_ID", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Update", "the", "last", "task", "status", "to", "completed"],
+    "tags": ["O", "O", "B-TASK_ID", "I-TASK_ID", "O", "O", "B-STATUS"]
+  },
+  {
+    "tokens": ["Set", "priority", "to", "high", "for", "task", "3"],
+    "tags": ["O", "O", "O", "B-PRIORITY", "O", "O", "B-TASK_ID"]
+  },
+
+  {
+    "tokens": ["Update", "task", "14", "priority", "to", "High", "and", "category", "to", "Project"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-PRIORITY", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Update", "its", "priority", "to", "Low", "and", "category", "to", "AI"],
+    "tags": ["O", "O", "O", "O", "B-PRIORITY", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Change", "task", "3", "category", "to", "Study", "and", "deadline", "to", "tomorrow"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-CATEGORY", "O", "O", "O", "B-DEADLINE"]
+  },
+  {
+    "tokens": ["Set", "its", "status", "to", "Completed", "and", "priority", "to", "Low"],
+    "tags": ["O", "O", "O", "O", "B-STATUS", "O", "O", "O", "B-PRIORITY"]
+  },
+  {
+    "tokens": ["Update", "task", "8", "priority", "to", "High", "and", "status", "to", "Completed"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-PRIORITY", "O", "O", "O", "B-STATUS"]
+  },
+  {
+    "tokens": ["Change", "its", "title", "to", "Deep", "Learning", "Revision", "and", "category", "to", "AI"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE", "I-TITLE", "O", "O", "O", "B-CATEGORY"]
+  },
+  {
+    "tokens": ["Update", "task", "1", "deadline", "to", "Friday", "and", "category", "to", "Work"],
+    "tags": ["O", "O", "B-TASK_ID", "O", "O", "B-DEADLINE", "O", "O", "O", "B-CATEGORY"]
+  },
+
+  {
+    "tokens": ["Delete", "task", "1"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Delete", "task", "9"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Remove", "task", "4"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Delete", "task", "9999"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Delete", "the", "previous", "task"],
+    "tags": ["O", "O", "B-TASK_ID", "I-TASK_ID"]
+  },
+  {
+    "tokens": ["Delete", "the", "last", "task"],
+    "tags": ["O", "O", "B-TASK_ID", "I-TASK_ID"]
+  },
+  {
+    "tokens": ["Delete", "the", "first", "task"],
+    "tags": ["O", "O", "B-TASK_ID", "I-TASK_ID"]
+  },
+  {
+    "tokens": ["Erase", "task", "3"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Drop", "task", "5"],
+    "tags": ["O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Remove", "task", "number", "2"],
+    "tags": ["O", "O", "O", "B-TASK_ID"]
+  },
+  {
+    "tokens": ["Delete", "task", "buy", "groceries"],
+    "tags": ["O", "O", "B-TITLE", "I-TITLE"]
+  },
+  {
+    "tokens": ["Remove", "the", "task", "to", "learn", "Python"],
+    "tags": ["O", "O", "O", "O", "B-TITLE", "I-TITLE"]
+  }
+]

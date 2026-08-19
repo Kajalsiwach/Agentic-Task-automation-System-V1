@@ -1,0 +1,22 @@
+intent_model:
+  vectorizer:
+    ngram_range: [1, 3]
+    max_features: 3000
+    sublinear_tf: true
+  classifier:
+    type: "CalibratedLinearClassifier"
+    base_estimator: "LinearSVC"
+    C: 1.0
+    cv: 3
+    method: "sigmoid"
+  confidence_threshold: 0.45
+
+ner_model:
+  vectorizer:
+    type: "DictVectorizer"
+    sparse: true
+  classifier:
+    type: "LogisticRegression"
+    C: 3.0
+    max_iter: 1000
+    solver: "lbfgs"
