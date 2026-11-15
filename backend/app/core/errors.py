@@ -48,3 +48,34 @@ class InvalidPlanError(TaskForgeError):
 class DatabaseError(TaskForgeError):
     def __init__(self, message: str):
         super().__init__(f"Database operation failed: {message}", error_type="DATABASE_ERROR")
+
+class ValidationError(TaskForgeError):
+    def __init__(self, message: str, error_type: str = "VALIDATION_FAILED"):
+        super().__init__(message, error_type=error_type)
+
+class ConfirmationRequiredError(TaskForgeError):
+    def __init__(self, message: str = "This action requires explicit confirmation before execution."):
+        super().__init__(message, error_type="CONFIRMATION_REQUIRED")
+
+class AmbiguousConfirmationError(TaskForgeError):
+    def __init__(self, message: str = "Your response was ambiguous. Please confirm with 'yes' or 'no'."):
+        super().__init__(message, error_type="AMBIGUOUS_CONFIRMATION")
+
+class AmbiguousRequestError(TaskForgeError):
+    def __init__(self, message: str):
+        super().__init__(message, error_type="AMBIGUOUS_REQUEST")
+
+class AmbiguousTaskReferenceError(TaskForgeError):
+    def __init__(self, message: str):
+        super().__init__(message, error_type="AMBIGUOUS_TASK_REFERENCE")
+
+class InvalidStatusError(TaskForgeError):
+    def __init__(self, status: str):
+        super().__init__(
+            f"Invalid status '{status}'. Supported values are: Pending, Completed.",
+            error_type="INVALID_STATUS"
+        )
+
+class ExecutionVerificationError(TaskForgeError):
+    def __init__(self, message: str):
+        super().__init__(message, error_type="EXECUTION_VERIFICATION_FAILED")

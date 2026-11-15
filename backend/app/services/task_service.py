@@ -1,4 +1,5 @@
 from typing import List, Optional
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from ..models.task import Task
@@ -9,13 +10,16 @@ class TaskService:
     @staticmethod
     def create_task(db: Session, task_data: TaskCreate) -> Task:
         try:
+            status_val = task_data.status or "Pending"
+            completed_time = datetime.now(timezone.utc) if status_val == "Completed" else None
             task = Task(
                 title=task_data.title,
                 description=task_data.description or "",
                 priority=task_data.priority or "Medium",
                 deadline=task_data.deadline,
                 category=task_data.category or "General",
-                status=task_data.status or "Pending",
+                status=status_val,
+                completed_at=completed_time,
             )
             db.add(task)
             db.commit()
@@ -68,6 +72,16 @@ class TaskService:
         task = TaskService.get_task_by_id(db, task_id)
         try:
             update_dict = update_data.model_dump(exclude_unset=True)
+            
+            # Automatically manage completed_at based on status change
+            if "status" in update_dict and update_dict["status"] is not None:
+                new_status = update_dict["status"]
+                if new_status == "Completed" and task.status != "Completed":
+                    if "completed_at" not in update_dict or update_dict["completed_at"] is None:
+                        task.completed_at = datetime.now(timezone.utc)
+                elif new_status == "Pending":
+                    task.completed_at = None
+
             for key, val in update_dict.items():
                 if val is not None:
                     setattr(task, key, val)

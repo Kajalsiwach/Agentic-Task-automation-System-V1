@@ -14,11 +14,11 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from backend.app.core.config import PROJECT_NAME, VERSION
-from backend.app.database.session import engine, Base
+from backend.app.database.session import engine, Base, init_db
 from backend.app.api.endpoints import router as api_router
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Create database tables and apply backward-compatible migrations
+init_db()
 
 app = FastAPI(
     title=PROJECT_NAME,

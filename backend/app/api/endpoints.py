@@ -5,12 +5,27 @@ from sqlalchemy.orm import Session
 from ..database.session import get_db
 from ..schemas.task import TaskCreate, TaskUpdate, TaskRead, TaskFilter
 from ..schemas.agent import AgentCommandRequest, AgentResponse, ContextState
+from ..schemas.analytics import (
+    AnalyticsOverviewResponse,
+    CompletionTrendPoint,
+    StatusDistributionData,
+    PriorityDistributionPoint,
+    CategoryDistributionPoint,
+)
 from ..services.task_service import TaskService
+from ..services.analytics_service import AnalyticsService
 from ..agents.agent import TaskForgeAgent
 from ..core.errors import TaskNotFoundError, TaskForgeError
 
 router = APIRouter()
 agent_instance = TaskForgeAgent()
+
+# ----------------- Health Check Endpoint -----------------
+
+@router.get("/health")
+def health_check():
+    """Health check endpoint."""
+    return {"status": "ok", "app": "TaskForge", "service": "healthy"}
 
 # ----------------- Task CRUD Endpoints -----------------
 
@@ -76,7 +91,7 @@ def execute_agent_command(cmd: AgentCommandRequest, db: Session = Depends(get_db
     Execute natural language task command through the TaskForge AI Agent pipeline:
     Intent -> NER -> Normalizer -> Context Memory -> Planner -> Executor -> Database -> Response
     """
-    return agent_instance.execute_command(goal=cmd.goal, db=db)
+    return agent_instance.execute_command(goal=cmd.goal, db=db, confirmed=cmd.confirmed or False)
 
 @router.get("/agent/context")
 def get_agent_context():
@@ -112,3 +127,30 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         "high_priority": high_priority,
         "categories": categories,
     }
+
+# ----------------- Analytics & Productivity Endpoints -----------------
+
+@router.get("/analytics/overview", response_model=AnalyticsOverviewResponse)
+def get_analytics_overview(range: str = "7d", db: Session = Depends(get_db)):
+    """Retrieve full analytics overview with all 4 chart datasets for selected date range."""
+    return AnalyticsService.get_overview(db, range_str=range)
+
+@router.get("/analytics/completion-trend", response_model=List[CompletionTrendPoint])
+def get_analytics_completion_trend(range: str = "7d", db: Session = Depends(get_db)):
+    """Retrieve daily task completion trend (Chart 1)."""
+    return AnalyticsService.get_completion_trend(db, range_str=range)
+
+@router.get("/analytics/status-distribution", response_model=StatusDistributionData)
+def get_analytics_status_distribution(range: str = "7d", db: Session = Depends(get_db)):
+    """Retrieve status distribution with separate overdue task count (Chart 2)."""
+    return AnalyticsService.get_status_distribution(db, range_str=range)
+
+@router.get("/analytics/priority-distribution", response_model=List[PriorityDistributionPoint])
+def get_analytics_priority_distribution(range: str = "7d", db: Session = Depends(get_db)):
+    """Retrieve priority distribution across all 5 tiers (Chart 3)."""
+    return AnalyticsService.get_priority_distribution(db, range_str=range)
+
+@router.get("/analytics/category-distribution", response_model=List[CategoryDistributionPoint])
+def get_analytics_category_distribution(range: str = "7d", db: Session = Depends(get_db)):
+    """Retrieve dynamic category-wise task distribution (Chart 4)."""
+    return AnalyticsService.get_category_distribution(db, range_str=range)

@@ -2,11 +2,13 @@ from typing import Dict, Any, Optional
 from ..schemas.agent import ExecutionPlan, AgentResponse
 from ..tools.task_tool import TaskTool
 from ..memory.context_memory import ContextMemory
+from ..models.task import Task
 from ..core.errors import (
     TaskForgeError,
     InvalidPlanError,
     TaskNotFoundError,
     DatabaseError,
+    ExecutionVerificationError,
 )
 
 class Executor:
@@ -26,6 +28,7 @@ class Executor:
 
         tool_result: Optional[Dict[str, Any]] = None
         executed_task_id: Optional[int] = None
+        executed_task_title: Optional[str] = None
         tasks_list_ids: Optional[list] = None
 
         # Execute steps sequentially
@@ -44,10 +47,27 @@ class Executor:
                         status=params.get("status", "Pending"),
                     )
                     executed_task_id = tool_result["task"]["id"]
+                    executed_task_title = tool_result["task"]["title"]
+
+                    # Post-execution DB verification
+                    tool.db.expire_all()
+                    persisted_task = tool.db.query(Task).filter(Task.id == executed_task_id).first()
+                    if not persisted_task:
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Task {executed_task_id} not found in database."
+                        )
+                    if persisted_task.title != executed_task_title:
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Persisted title '{persisted_task.title}' does not match expected '{executed_task_title}'."
+                        )
+
+                    memory.set_active_task(executed_task_id, executed_task_title)
 
                 elif tool_name == "get_task":
                     tool_result = tool.get_task(task_id=params["task_id"])
                     executed_task_id = tool_result["task"]["id"]
+                    executed_task_title = tool_result["task"]["title"]
+                    memory.set_active_task(executed_task_id, executed_task_title)
 
                 elif tool_name == "get_all_tasks":
                     tool_result = tool.get_all_tasks(
@@ -57,8 +77,6 @@ class Executor:
                         search=params.get("search"),
                     )
                     tasks_list_ids = [t["id"] for t in tool_result["tasks"]]
-                    if tasks_list_ids:
-                        executed_task_id = tasks_list_ids[0]
 
                 elif tool_name == "update_task":
                     tool_result = tool.update_task(
@@ -71,17 +89,67 @@ class Executor:
                         status=params.get("status"),
                     )
                     executed_task_id = tool_result["task"]["id"]
+                    executed_task_title = tool_result["task"]["title"]
+
+                    # Post-execution DB verification
+                    tool.db.expire_all()
+                    persisted_task = tool.db.query(Task).filter(Task.id == executed_task_id).first()
+                    if not persisted_task:
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Updated task {executed_task_id} not found in database."
+                        )
+                    if params.get("title") is not None and persisted_task.title != params.get("title"):
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Task title '{persisted_task.title}' does not match expected '{params.get('title')}'."
+                        )
+                    if params.get("priority") is not None and persisted_task.priority != params.get("priority"):
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Task priority '{persisted_task.priority}' does not match expected '{params.get('priority')}'."
+                        )
+                    if params.get("status") is not None and persisted_task.status != params.get("status"):
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Task status '{persisted_task.status}' does not match expected '{params.get('status')}'."
+                        )
+                    if params.get("category") is not None and persisted_task.category != params.get("category"):
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Task category '{persisted_task.category}' does not match expected '{params.get('category')}'."
+                        )
+                    if params.get("deadline") is not None and persisted_task.deadline != params.get("deadline"):
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Task deadline '{persisted_task.deadline}' does not match expected '{params.get('deadline')}'."
+                        )
+
+                    memory.set_active_task(executed_task_id, executed_task_title)
 
                 elif tool_name == "delete_task":
                     tool_result = tool.delete_task(task_id=params["task_id"])
-                    executed_task_id = None  # Deleted task is cleared from primary focus
-                    if memory.last_referenced_task_id == params["task_id"]:
-                        memory.last_referenced_task_id = None
+                    executed_task_id = None
+                    executed_task_title = None
+
+                    # Post-execution DB verification
+                    tool.db.expire_all()
+                    persisted_task = tool.db.query(Task).filter(Task.id == params["task_id"]).first()
+                    if persisted_task is not None:
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: Task {params['task_id']} was not deleted from database."
+                        )
+
+                    memory.clear_active_task()
 
                 elif tool_name == "delete_all_tasks":
                     tool_result = tool.delete_all_tasks()
                     executed_task_id = None
+                    executed_task_title = None
                     tasks_list_ids = []
+
+                    # Post-execution DB verification
+                    tool.db.expire_all()
+                    remaining_count = tool.db.query(Task).count()
+                    if remaining_count != 0:
+                        raise ExecutionVerificationError(
+                            f"Post-execution verification failed: {remaining_count} tasks remain in database after delete_all_tasks."
+                        )
+
                     memory.reset()
 
                 else:
@@ -93,6 +161,7 @@ class Executor:
                 query=query,
                 intent=plan.intent,
                 task_id=executed_task_id,
+                task_title=executed_task_title,
                 tasks_list=tasks_list_ids,
                 success=True,
             )

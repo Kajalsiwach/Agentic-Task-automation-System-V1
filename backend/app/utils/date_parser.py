@@ -62,5 +62,13 @@ def parse_natural_date(raw_date: str, base_date: Optional[datetime] = None) -> O
             target = now + timedelta(days=days_ahead if days_ahead > 0 else 7)
             return target.strftime("%Y-%m-%d")
 
+    # 5. Formatted date parsing (e.g., Nov 15, November 15 2026, MM/DD/YYYY, DD-MM-YYYY)
+    try:
+        from dateutil import parser as dateutil_parser
+        dt = dateutil_parser.parse(raw_clean, default=now)
+        return dt.strftime("%Y-%m-%d")
+    except Exception:
+        pass
+
     # Fallback to returning the cleaned string if it's descriptive
     return raw_clean.title()

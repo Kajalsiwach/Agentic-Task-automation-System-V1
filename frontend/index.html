@@ -26,6 +26,27 @@
         </div>
       </div>
 
+      <!-- Navigation Tabs -->
+      <nav class="header-nav" aria-label="Main Navigation">
+        <button id="tabTasksBtn" class="nav-tab active" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Tasks</span>
+        </button>
+        <button id="tabAnalyticsBtn" class="nav-tab" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Analytics</span>
+        </button>
+      </nav>
+
       <div class="header-status">
         <div class="engine-badge">
           <span class="pulse-dot"></span>
@@ -44,8 +65,10 @@
     <!-- Main Container -->
     <main class="app-main">
       
-      <!-- Metrics Overview -->
-      <section class="metrics-grid">
+      <!-- TASKS WORKSPACE VIEW -->
+      <div id="tasksView" class="view-panel active">
+        <!-- Metrics Overview -->
+        <section class="metrics-grid">
         <div class="metric-card">
           <div class="metric-info">
             <span class="metric-label">Total Tasks</span>
@@ -200,10 +223,21 @@
             <span class="filter-label">Priority:</span>
             <select id="priorityFilterSelect" class="filter-select">
               <option value="">All Priorities</option>
+              <option value="Critical">Critical</option>
               <option value="High">High</option>
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
+              <option value="Very Low">Very Low</option>
             </select>
+          </div>
+
+          <!-- Active Category Filter Tag -->
+          <div id="activeCategoryContainer" class="filter-group hidden">
+            <span class="filter-label">Category:</span>
+            <span class="active-category-pill">
+              <span id="activeCategoryText">General</span>
+              <button id="clearCategoryFilterBtn" class="btn-clear-cat" title="Clear category filter">&times;</button>
+            </span>
           </div>
         </div>
 
@@ -219,6 +253,213 @@
           <p>Type a natural language command above or click "+ New Task" to create one.</p>
         </div>
       </section>
+    </div>
+    <!-- END TASKS WORKSPACE VIEW -->
+
+    <!-- ANALYTICS & PRODUCTIVITY VIEW -->
+    <div id="analyticsView" class="view-panel hidden">
+      <section class="analytics-section">
+        <!-- Analytics Header -->
+        <div class="analytics-header">
+          <div class="analytics-title-group">
+            <div class="analytics-badge-tag">
+              <span class="pulse-dot"></span>
+              <span>Live Database Intelligence</span>
+            </div>
+            <h2>Productivity Analytics</h2>
+            <p class="analytics-subtitle">Track your task completion and productivity patterns.</p>
+          </div>
+
+          <!-- Date Range Selector -->
+          <div class="date-range-container">
+            <span class="range-selector-label">Timeframe:</span>
+            <div class="date-range-selector" id="dateRangeSelector" role="group" aria-label="Date Range Selector">
+              <button class="range-btn active" data-range="7d" type="button">Last 7 Days</button>
+              <button class="range-btn" data-range="30d" type="button">Last 30 Days</button>
+              <button class="range-btn" data-range="90d" type="button">Last 90 Days</button>
+              <button class="range-btn" data-range="all" type="button">All Time</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics KPI Summary Strip -->
+        <div class="analytics-kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Total Workload</span>
+              <span class="kpi-icon-pill">📋</span>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpiTotalTasks" class="kpi-value">0</span>
+              <span class="kpi-unit">tasks</span>
+            </div>
+            <span id="kpiDateSpan" class="kpi-subtext">Selected period</span>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Completed Tasks</span>
+              <span class="kpi-icon-pill success">✓</span>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpiCompletedTasks" class="kpi-value">0</span>
+              <span id="kpiCompletionRate" class="kpi-badge badge-success">0.0% rate</span>
+            </div>
+            <span class="kpi-subtext">Finished items</span>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Pending Tasks</span>
+              <span class="kpi-icon-pill warning">⏳</span>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpiPendingTasks" class="kpi-value">0</span>
+              <span class="kpi-unit">in progress</span>
+            </div>
+            <span class="kpi-subtext">Awaiting completion</span>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Overdue Tasks</span>
+              <span class="kpi-icon-pill danger">⚠️</span>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpiOverdueTasks" class="kpi-value">0</span>
+              <span id="kpiOverdueBadge" class="kpi-badge badge-neutral">On track</span>
+            </div>
+            <span class="kpi-subtext">Passed deadline</span>
+          </div>
+        </div>
+
+        <!-- Loading State Indicator -->
+        <div id="analyticsLoading" class="analytics-loading hidden">
+          <div class="spinner"></div>
+          <span>Loading analytics from database...</span>
+        </div>
+
+        <!-- 4 Interactive Charts Grid (2-Column Desktop Grid) -->
+        <div class="analytics-charts-grid" id="chartsGrid">
+          
+          <!-- Chart 1: Weekly Task Completion (Line Chart) -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-title-wrapper">
+                <div class="chart-title-badge">
+                  <span class="chart-num">1</span>
+                  <h3 class="chart-title">Weekly Task Completion</h3>
+                </div>
+                <p class="chart-subtitle">Daily completed tasks over the selected period</p>
+              </div>
+              <span id="trendTotalBadge" class="chart-counter-badge">0 completed</span>
+            </div>
+            <div class="chart-body">
+              <div class="chart-canvas-container">
+                <canvas id="completionTrendChart"></canvas>
+              </div>
+              <div id="trendEmptyState" class="chart-empty-state hidden">
+                <span class="empty-icon">📊</span>
+                <p>No completed tasks recorded in this period.</p>
+              </div>
+            </div>
+            <div class="chart-card-footer">
+              <span class="footer-hint">Real database completion timestamps • Continuous daily zero tracking</span>
+            </div>
+          </div>
+
+          <!-- Chart 2: Task Status Distribution (Doughnut Chart) -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-title-wrapper">
+                <div class="chart-title-badge">
+                  <span class="chart-num">2</span>
+                  <h3 class="chart-title">Task Status Distribution</h3>
+                </div>
+                <p class="chart-subtitle">Workload split between Pending and Completed</p>
+              </div>
+              <span class="chart-interactive-pill" title="Click chart segments to filter tasks">
+                <span>Click to filter</span>
+              </span>
+            </div>
+            <div class="chart-body">
+              <div class="chart-canvas-container">
+                <canvas id="statusDistributionChart"></canvas>
+              </div>
+              <div id="statusEmptyState" class="chart-empty-state hidden">
+                <span class="empty-icon">⭕</span>
+                <p>No tasks available in selected timeframe.</p>
+              </div>
+            </div>
+            <div class="chart-card-footer split-footer">
+              <div id="overdueFooterBadge" class="overdue-footer-pill">
+                <span class="overdue-dot"></span>
+                <span id="overdueFooterText">0 tasks overdue</span>
+              </div>
+              <span class="footer-hint">Clicking segment filters task list</span>
+            </div>
+          </div>
+
+          <!-- Chart 3: Priority Distribution (Horizontal Bar Chart) -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-title-wrapper">
+                <div class="chart-title-badge">
+                  <span class="chart-num">3</span>
+                  <h3 class="chart-title">Priority Distribution</h3>
+                </div>
+                <p class="chart-subtitle">Task allocation by urgency level (Critical to Very Low)</p>
+              </div>
+              <span class="chart-interactive-pill" title="Click a bar to filter tasks by priority">
+                <span>Click to filter</span>
+              </span>
+            </div>
+            <div class="chart-body">
+              <div class="chart-canvas-container">
+                <canvas id="priorityDistributionChart"></canvas>
+              </div>
+              <div id="priorityEmptyState" class="chart-empty-state hidden">
+                <span class="empty-icon">📶</span>
+                <p>No priority data recorded.</p>
+              </div>
+            </div>
+            <div class="chart-card-footer">
+              <span class="footer-hint">Consistent tier hierarchy • Click bar to inspect matching tasks</span>
+            </div>
+          </div>
+
+          <!-- Chart 4: Category-wise Task Distribution (Pie Chart) -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-title-wrapper">
+                <div class="chart-title-badge">
+                  <span class="chart-num">4</span>
+                  <h3 class="chart-title">Category-wise Task Distribution</h3>
+                </div>
+                <p class="chart-subtitle">Dynamic task grouping across active domains and tags</p>
+              </div>
+              <span class="chart-interactive-pill" title="Click a category slice to filter tasks">
+                <span>Click to filter</span>
+              </span>
+            </div>
+            <div class="chart-body">
+              <div class="chart-canvas-container">
+                <canvas id="categoryDistributionChart"></canvas>
+              </div>
+              <div id="categoryEmptyState" class="chart-empty-state hidden">
+                <span class="empty-icon">🏷️</span>
+                <p>No category classifications found.</p>
+              </div>
+            </div>
+            <div class="chart-card-footer">
+              <span class="footer-hint">Dynamic categories from database • Click slice to filter</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+    <!-- END ANALYTICS VIEW -->
 
     </main>
   </div>
@@ -248,9 +489,11 @@
           <div class="form-group">
             <label for="formPriority">Priority</label>
             <select id="formPriority">
-              <option value="Low">Low</option>
-              <option value="Medium" selected>Medium</option>
+              <option value="Critical">Critical</option>
               <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+              <option value="Very Low">Very Low</option>
             </select>
           </div>
 
@@ -283,6 +526,7 @@
     </div>
   </div>
 
+  <script src="chart.umd.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

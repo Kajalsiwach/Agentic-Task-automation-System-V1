@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 
 class AgentCommandRequest(BaseModel):
     goal: str = Field(..., min_length=1, description="Natural language task command")
+    confirmed: Optional[bool] = Field(default=False, description="Explicit confirmation for destructive operations")
 
 class PlanStep(BaseModel):
     step_number: int

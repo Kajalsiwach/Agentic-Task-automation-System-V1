@@ -138,8 +138,8 @@ def test_failure_d_delete_all_tasks():
     TaskService.create_task(db, TaskCreate(title="Task 3"))
     assert len(TaskService.get_tasks(db)) == 3
 
-    # Delete all tasks
-    r = agent.execute_command("Delete all tasks.", db=db)
+    # Delete all tasks (with explicit confirmation per Stage 1 contract)
+    r = agent.execute_command("Delete all tasks.", db=db, confirmed=True)
     assert r.success is True
     assert r.intent == "DELETE_ALL_TASKS"
     assert "deleted successfully" in r.message.lower()
