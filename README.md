@@ -1,159 +1,190 @@
-# TaskForge — AI-Powered Natural-Language Task Automation System
+# TaskForge — AI Task Automation & Analytics System
 
-TaskForge is an AI-powered task automation system featuring a layered architecture, a local classical machine learning pipeline for intent classification and named entity recognition (NER), a conversational context memory system, and an explicit Planner/Executor workflow that operates on an SQLite database via FastAPI.
+TaskForge is an AI-powered task management system that lets you manage your daily tasks using natural English commands or an interactive web dashboard. It combines lightweight machine learning with deterministic safety rules to understand requests, maintain conversational context, protect against accidental changes, and provide visual productivity analytics.
 
 ---
 
-## 1. System Architecture
+## Key Features
 
-```text
-User Natural-Language Input
-    ↓
-Intent Classification (TF-IDF + Calibrated Linear Classifier)
-    ↓
-Named Entity Recognition (BIO Token Sequence Labeler with Window Features)
-    ↓
-Entity Normalization & Validation (Dates, Priority, Category, Status, Ordinals)
-    ↓
-Conversational Context Resolution (Resolves "it", "its", "that task", "the first task", "the last task")
-    ↓
-Goal Understanding & Planner (Generates structured execution plan with validation steps)
-    ↓
-Executor (Validates and executes tool calls)
-    ↓
-TaskTool & TaskService
-    ↓
-SQLite Database (Persistent storage)
-    ↓
-Structured Agent Response
-    ↓
-Interactive Modern UI (Live Execution Inspector + Task Management Board)
+- **Natural Language Task Commands**  
+  Add, update, view, or delete tasks naturally without filling out complex forms.
+  - *Example:* `"Create a task to prepare sprint demo with high priority due tomorrow"`
+  - *Example:* `"Find task called Review Q4 report"`
+
+- **Context Memory & Follow-ups**  
+  Follow up on previously mentioned tasks using pronouns or relative phrases like `"it"`, `"that task"`, or `"the first task"`.
+  - *Example:* `"Show task 2"` → `"Mark it as completed"` → `"Update its priority to low"`
+
+- **Safe Task Resolution & Disambiguation**  
+  If multiple tasks share a similar title, TaskForge stops and asks for clarification instead of guessing or modifying the wrong task.
+
+- **Safe Deletion Protection**  
+  Bulk deletion (`Delete all tasks`) requires an explicit standalone confirmation (`"yes"`). Unrelated commands automatically cancel the pending deletion, preventing accidental data loss.
+
+- **Interactive Analytics & Productivity Dashboard**  
+  A visual dashboard with real-time charts to track workload and progress:
+  - **Completion Trend:** Daily chart of tasks completed over time.
+  - **Status Breakdown:** Visual split between Pending, Completed, and Overdue tasks.
+  - **Priority Distribution:** Task counts across High, Medium, and Low tiers.
+  - **Category Distribution:** Dynamic distribution across custom tags/projects.
+  - **Date Range Selector:** View data for the Last 7 Days, Last 30 Days, or All Time.
+
+- **Guaranteed Database Verification**  
+  Every change is verified directly against the SQLite database before confirming success to the user.
+
+---
+
+## How It Works
+
+```
+User Input (Natural Language or UI)
+   │
+   ▼
+1. Intent & Entity Extraction (Identifies what you want to do and extracts title, priority, date, category)
+   │
+   ▼
+2. Normalization & Safety Guardrails (Cleans input, resolves dates, checks pronouns and context memory)
+   │
+   ▼
+3. Request Validation (Validates all required fields and checks for confirmation if deleting)
+   │
+   ▼
+4. Database Execution & Verification (Applies change to SQLite and verifies the stored record)
+   │
+   ▼
+5. Response & Live Dashboard (Updates the UI, task list, and interactive charts)
 ```
 
 ---
 
-## 2. Directory Structure
+## Project Structure
 
 ```text
-taskforge/
+task_automation/
 ├── ai/
-│   ├── configs/
-│   │   └── model_config.yaml          # Hyperparameters and model specifications
-│   ├── data/
-│   │   ├── intent_dataset.json        # Curated dataset for 6 intents
-│   │   └── ner_dataset.json           # BIO-annotated token sequences
-│   ├── preprocessing/
-│   │   ├── text_preprocessor.py       # Regex tokenizer & whitespace normalization
-│   │   └── feature_extractor.py       # Window-based token feature extraction
-│   ├── training/
-│   │   ├── train_intent.py            # Calibrated Linear Classifier trainer
-│   │   ├── train_ner.py               # Token-level sequence classifier trainer
-│   │   └── train_all.py               # Master training script
-│   ├── evaluation/
-│   │   └── evaluate.py                # Model evaluation and metrics reporter
-│   ├── saved_models/
-│   │   ├── intent_model.joblib        # Serialized intent model bundle
-│   │   └── ner_model.joblib           # Serialized NER model bundle
-│   └── inference/
-│       ├── intent_classifier.py       # Runtime intent predictor with thresholding
-│       ├── ner_extractor.py           # Runtime NER entity extractor
-│       └── pipeline.py                # Unified AI inference interface
+│   ├── configs/                  # Model configurations
+│   ├── data/                     # Training datasets for intents and entities
+│   ├── inference/                # Real-time intent classifier and entity extractor
+│   ├── saved_models/             # Pre-trained ML model files
+│   └── training/                 # Offline model training scripts
 ├── backend/
 │   ├── app/
-│   │   ├── agents/
-│   │   │   └── agent.py               # Master automation agent orchestrator
-│   │   ├── api/
-│   │   │   └── endpoints.py           # REST endpoints (/tasks, /agent/execute, /stats)
-│   │   ├── core/
-│   │   │   ├── config.py              # Application settings
-│   │   │   └── errors.py              # Typed domain exceptions
-│   │   ├── database/
-│   │   │   └── session.py             # SQLAlchemy session and engine
-│   │   ├── memory/
-│   │   │   └── context_memory.py      # Conversational context memory
-│   │   ├── models/
-│   │   │   └── task.py                # Task database model
-│   │   ├── schemas/
-│   │   │   ├── task.py                # Task Pydantic schemas
-│   │   │   └── agent.py               # Agent request, plan, response schemas
-│   │   ├── services/
-│   │   │   └── task_service.py        # Task management business logic
-│   │   ├── tools/
-│   │   │   └── task_tool.py           # Tool interface for the executor
-│   │   ├── utils/
-│   │   │   ├── normalizer.py          # Entity normalization
-│   │   │   └── date_parser.py         # Natural date parsing (ISO format)
-│   │   └── workflows/
-│   │       ├── planner.py             # Execution plan generator
-│   │       └── executor.py            # Plan executor and safety checks
-│   └── main.py                        # FastAPI application entrypoint
+│   │   ├── agents/               # Main agent orchestrator
+│   │   ├── api/                  # REST API endpoints (/tasks, /agent, /analytics, /health)
+│   │   ├── core/                 # Settings and typed error definitions
+│   │   ├── database/             # SQLite connection and session management
+│   │   ├── memory/               # Conversational context memory
+│   │   ├── models/               # SQLAlchemy database models
+│   │   ├── schemas/              # Pydantic data schemas & request contracts
+│   │   ├── services/             # Business logic (tasks, analytics, validation, resolver)
+│   │   ├── tools/                # Database execution tools
+│   │   ├── utils/                # Date parsing and entity normalization helpers
+│   │   └── workflows/            # Plan formulation and verified execution
+│   └── main.py                   # FastAPI application entrypoint
 ├── frontend/
-│   ├── index.html                     # Responsive UI layout
-│   ├── style.css                      # Vanilla CSS design system
-│   └── app.js                         # Dynamic UI and API controller
-├── tests/
-│   ├── test_backend.py                # REST CRUD and validation tests
-│   ├── test_ai.py                     # Intent and NER inference tests
-│   ├── test_agent.py                  # Planning, execution, context memory tests
-│   └── test_e2e.py                    # Multi-turn conversational flow tests
-├── requirements.txt
-└── README.md
+│   ├── index.html                # Responsive web dashboard layout
+│   ├── style.css                 # Clean blue-and-white stylesheet
+│   ├── app.js                    # UI interaction, chat console, and Chart.js controller
+│   └── chart.umd.js              # Standalone Chart.js library (bundled for reliability)
+├── tests/                        # 12 test suites (91 automated tests)
+├── requirements.txt              # Project Python dependencies
+└── README.md                     # Project documentation
 ```
 
 ---
 
-## 3. Quick Start
+## Getting Started
 
-### Step 1: Install Dependencies
+### 1. Prerequisites
+- **Python 3.10+**
+- Git
+
+### 2. Installation
+Clone the repository and install the required dependencies:
+
 ```bash
+git clone https://github.com/Kajalsiwach/Agentic-Task-automation-System-V1.git
+cd Agentic-Task-automation-System-V1
 pip install -r requirements.txt
 ```
 
-### Step 2: Train AI Models (Reproducible Offline Training)
+### 3. Start the Application
+Run the FastAPI development server:
+
 ```bash
-python ai/training/train_all.py
+uvicorn backend.main:app --reload
 ```
 
-### Step 3: Run the Automated Test Suite
+The application will be live at:
+- **Web Dashboard:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- **API Documentation (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **Health Check Endpoint:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+
+---
+
+## Example Natural Language Commands
+
+You can type these directly into the chat bar on the dashboard or send them via the `/api/agent/execute` API endpoint:
+
+| Command | Action |
+|---|---|
+| `"Create a task to prepare sprint demo with high priority due tomorrow"` | Creates task with title, High priority, and tomorrow's date |
+| `"Add task Review Q4 report in category Finance"` | Creates task with category `"Finance"` |
+| `"List all tasks"` | Displays all stored tasks |
+| `"Show task 1"` | Displays details for Task #1 and sets it in context |
+| `"Mark it as completed"` | Updates the task currently in context to `Completed` |
+| `"Update its priority to low"` | Changes the priority of the context task to `Low` |
+| `"Rename task 2 to Review Final Q4 Report"` | Updates the title of Task #2 |
+| `"Delete task Review Final Q4 Report"` | Deletes the specific task safely |
+| `"Delete all tasks"` | Triggers safety prompt: requires `"yes"` to proceed |
+
+---
+
+## REST API Overview
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` or `/api/health` | Service health status |
+| `GET` | `/tasks` | List all tasks (supports filtering by `status`, `priority`, `category`) |
+| `POST` | `/tasks` | Create a task directly via structured JSON |
+| `GET` | `/tasks/{id}` | Retrieve a task by ID |
+| `PUT` | `/tasks/{id}` | Update task fields (status, priority, deadline, category) |
+| `DELETE` | `/tasks/{id}` | Delete a task by ID |
+| `DELETE` | `/tasks` | Delete all tasks |
+| `POST` | `/api/agent/execute` | Execute a natural language task command |
+| `GET` | `/api/agent/context` | View active conversational memory state |
+| `POST` | `/api/agent/context/reset` | Clear context memory |
+| `GET` | `/stats` | High-level task summary metrics |
+| `GET` | `/analytics/overview` | Full analytics payload for all 4 charts (`?range=7d\|30d\|all`) |
+
+---
+
+## Testing & Quality Assurance
+
+TaskForge includes an automated test suite covering unit tests, API tests, entity extraction, context memory, and end-to-end user workflows:
+
 ```bash
 python -m pytest tests/ -v
 ```
 
-### Step 4: Launch TaskForge Server
-```bash
-python backend/main.py
-```
-Open your browser at **http://127.0.0.1:8000** to interact with TaskForge.
+**Test Suite Coverage:**
+- `test_agent.py`: Agent planning and context resolution.
+- `test_ai.py`: ML model inference and token extraction.
+- `test_analytics.py`: Real-time chart metric calculations and date filtering.
+- `test_backend.py`: Core REST API operations.
+- `test_e2e.py`: Multi-turn conversational flows.
+- `test_e2e_http_commands.py`: Live HTTP boundary testing across user scenarios.
+- `test_entity_extraction.py`: Deterministic fallback rules for dates, titles, and priorities.
+- `test_intent_and_verification.py`: Intent guardrails and post-execution DB state verification.
+- `test_regression.py`: Edge cases, bad inputs, and safety handling.
+- `test_safe_confirmation.py`: Two-step bulk delete confirmation rules.
+- `test_task_resolution.py`: Ambiguous title matching and safe error reporting.
+- `test_validation_contract.py`: Centralized request contract validation.
+
+**Result: 91 passed out of 91 tests (100% pass rate).**
 
 ---
 
-## 4. Key Capabilities & Conversational Examples
+## License
 
-### Task Creation
-- `"Create a task to learn FastAPI with medium priority in backend category tomorrow"`
-- `"Add a high priority task to revise Python tomorrow"`
-- `"Create a backend project called AI Task Manager"`
-
-### Context-Aware Multi-Turn Sequences
-```text
-User: "Show task 1"
-System: Displays Task 1 details
-
-User: "Update its priority to low"
-System: Resolves "its" -> Task 1, updates priority to Low
-
-User: "Change its category to backend"
-System: Resolves "its" -> Task 1, updates category to Backend
-
-User: "Delete it"
-System: Resolves "it" -> Task 1, safely deletes Task 1
-```
-
-### Ordinal References
-- `"Show the first task"`
-- `"Update its priority to high"`
-- `"Show the previous task"`
-
-### Safe Error Handling
-- `"Delete task 9999"` -> Fails safely with `TASK_NOT_FOUND` (no silent deletions or hallucinations)
-- `"What is quantum computing?"` -> Fails safely with `UNKNOWN_INTENT`
+This project is open-source and available under the standard MIT License.
