@@ -61,3 +61,8 @@ backend/data/*.db
 
 # Logs
 *.log
+
+# Presentations & Documents
+*.pptx
+*.ppt
+*.key
